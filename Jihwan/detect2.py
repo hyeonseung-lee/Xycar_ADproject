@@ -13,11 +13,11 @@ while True:
     cdst = cv2.cvtColor(dst, cv2.COLOR_GRAY2BGR)
 
     # Using Probabilistic Hough Transform
-    linesP = cv2.HoughLinesP(dst, 1, np.pi / 180, 50, None, 50, 10)
+    lines = cv2.HoughLinesP(dst, 1, np.pi / 180, 50, None, 50, 10)
 
-    if linesP is not None:
-        for i in range(0, len(linesP)):
-            l = linesP[i][0]
+    if lines is not None:
+        for i in range(0, len(lines)):
+            l = lines[i][0]
             cv2.line(cdst, (l[0], l[1]), (l[2], l[3]), (0, 0, 255), 3, cv2.LINE_AA)
 
     # Setting range to binary
