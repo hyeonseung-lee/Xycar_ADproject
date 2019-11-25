@@ -10,7 +10,7 @@ while True:
     ret, frame = cap.read()
     frame = frame[300:340, :]
     blur = cv2.GaussianBlur(frame, (5, 5), 0)
-    dst = cv2.Canny(frame, 50, 200, None, 3)
+    dst = cv2.Canny(blur, 50, 200, None, 3)
 
     cdst = cv2.cvtColor(dst, cv2.COLOR_GRAY2BGR)
     cdstP = np.copy(cdst)
