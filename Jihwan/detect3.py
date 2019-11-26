@@ -21,10 +21,17 @@ pixel_cnt_threshold = 0.2 * area_width * area_height
 
 while True:
     ret, frame = cap.read()
+    # ROI 설정
     frame = frame[roi_vertical_pos:roi_vertical_pos + scan_height, :]
-    blur = cv2.GaussianBlur(frame, (5, 5), 0)
-    dst = cv2.Canny(blur, 50, 200, None, 3)
-    cdst = cv2.cvtColor(dst, cv2.COLOR_GRAY2BGR)
+	
+	# blur 처리    
+	blur = cv2.GaussianBlur(frame, (5, 5), 0)
+	
+	# canny 윤곽선    
+	dst = cv2.Canny(blur, 50, 200, None, 3)
+	
+	# gray로 나온 canny를 bgr로 변환    
+	cdst = cv2.cvtColor(dst, cv2.COLOR_GRAY2BGR)
 
     # Using Probabilistic Hough Transform
     lines = cv2.HoughLinesP(dst, 1, np.pi / 180, 50, None, 50, 10)
@@ -33,7 +40,7 @@ while True:
         for i in range(0, len(lines)):
             l = lines[i][0]
             cv2.line(cdst, (l[0], l[1]), (l[2], l[3]), (0, 0, 255), 3, cv2.LINE_AA)
-
+	
     # Setting range to binary
     lbound = np.array([0, 0, value_threshold], dtype=np.uint8)
     ubound = np.array([131, 255, 255], dtype=np.uint8)
