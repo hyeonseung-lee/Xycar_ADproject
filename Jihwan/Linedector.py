@@ -23,7 +23,7 @@ class LineDetector:
         self.detect_node = rospy.Subscriber(topic, Image, self.conv_image)
 
     def conv_image(self, data):
-        # cv2.imshow("camera", cv_image)
+        
         cv_image = self.bridge.imgmsg_to_cv2(data, "bgr8")
         frame = cv_image[self.roi_vertical_pos:self.roi_vertical_pos + self.scan_height, :]
         blur = cv2.GaussianBlur(frame, (5, 5), 0)
@@ -47,44 +47,41 @@ class LineDetector:
     def detect_lines(self):
         # Return positions of left and right lines detected.
 
-        self.left, self.right = -1, -1
+        left, right = -1, -1
 
         for l in range(self.image_middle, self.area_width, -1):
             area = self.bin[self.row_begin:self.row_end, l - self.area_width:l]
             if cv2.countNonZero(area) > self.pixel_cnt_threshold:
-                self.left = l
+                left = l
                 break
 
         for r in range(self.image_middle, self.image_width - self.area_width):
             area = self.bin[self.row_begin:self.row_end, r:r + self.area_width]
             if cv2.countNonZero(area) > self.pixel_cnt_threshold:
-                self.right = r
+                right = r
                 break
 
-        return self.left, self.right
+        return left, right
 
     def show_images(self, left, right):
 
         if left != -1:
             self.lsquare = cv2.rectangle(self.view,
-                                         (self.left, self.row_begin),
-                                         (self.left - self.area_width, self.row_end),
+                                         (left, self.row_begin),
+                                         (left - self.area_width, self.row_end),
                                          (0, 255, 0), 3)
         else:
             print("Lost left line")
 
         if right != -1:
             self.rsquare = cv2.rectangle(self.view,
-                                         (self.right, self.row_begin),
-                                         (self.right + self.area_width, self.row_end),
+                                         (right, self.row_begin),
+                                         (right + self.area_width, self.row_end),
                                          (0, 255, 0), 3)
         else:
             print("Lost right line")
 
         cv2.imshow('view', self.view)
-
-
-
 
 if __name__ == "__main__":
     det = LineDetector()
