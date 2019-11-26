@@ -85,7 +85,7 @@ class LineDetector:
 
 
 	def show_images(self, left, right):
-		cv2.imshow("Source", self.frame)
+		cv2.imshow("Source", self.roi)
 
 		cv2.imshow("bin", self.bin)
 
