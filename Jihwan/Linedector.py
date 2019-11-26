@@ -23,9 +23,9 @@ class LineDetector:
         self.detect_node = rospy.Subscriber(topic, Image, self.conv_image)
 
     def conv_image(self, data):
-        # cv2.imshow("camera", self.cv_image)
-        self.cv_image = self.bridge.imgmsg_to_cv2(self, "bgr8")
-        frame = self.cv_image[self.roi_vertical_pos:self.roi_vertical_pos + self.scan_height, :]
+        # cv2.imshow("camera", cv_image)
+        cv_image = self.bridge.imgmsg_to_cv2(data, "bgr8")
+        frame = cv_image[self.roi_vertical_pos:self.roi_vertical_pos + self.scan_height, :]
         blur = cv2.GaussianBlur(frame, (5, 5), 0)
         dst = cv2.Canny(blur, 50, 200, None, 3)
         cdst = cv2.cvtColor(dst, cv2.COLOR_GRAY2BGR)
@@ -63,30 +63,31 @@ class LineDetector:
 
         return self.left, self.right
 
-
     def show_images(self, left, right):
 
         if left != -1:
             self.lsquare = cv2.rectangle(self.view,
-                                    (self.left, self.row_begin),
-                                    (self.left - self.area_width, self.row_end),
-                                    (0, 255, 0), 3)
+                                         (self.left, self.row_begin),
+                                         (self.left - self.area_width, self.row_end),
+                                         (0, 255, 0), 3)
         else:
             print("Lost left line")
 
         if right != -1:
             self.rsquare = cv2.rectangle(self.view,
-                                    (self.right, self.row_begin),
-                                    (self.right + self.area_width, self.row_end),
-                                    (0, 255, 0), 3)
+                                         (self.right, self.row_begin),
+                                         (self.right + self.area_width, self.row_end),
+                                         (0, 255, 0), 3)
         else:
             print("Lost right line")
 
         cv2.imshow('view', self.view)
-  
+
+
+
 
 if __name__ == "__main__":
     det = LineDetector()
     time.sleep(1)
     while not rospy.is_shutdown():
-    	det.show_images(det.detect_lines()[0], det.detect_lines[1])
+        det.show_images(det.detect_lines()[0], det.detect_lines()[1])
