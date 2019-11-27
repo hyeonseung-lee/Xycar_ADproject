@@ -14,7 +14,7 @@ class AutoDrive:
 
     def trace(self):
         line_l, line_r = self.line_detector.detect_lines()
-        self.line_detector.show_images()
+        self.line_detector.show_images(line_l, line_r)
         angle = self.steer(line_l, line_r)
         speed = self.accelerate(angle)
         self.driver.drive(angle + 90, speed + 90)
