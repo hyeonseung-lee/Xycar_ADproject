@@ -24,14 +24,14 @@ while True:
     # ROI 설정
     frame = frame[roi_vertical_pos:roi_vertical_pos + scan_height, :]
 	
-	# blur 처리    
-	blur = cv2.GaussianBlur(frame, (5, 5), 0)
+    # blur 처리    
+    blur = cv2.GaussianBlur(frame, (5, 5), 0)
 	
-	# canny 윤곽선    
-	dst = cv2.Canny(blur, 50, 200, None, 3)
+    # canny 윤곽선    
+    dst = cv2.Canny(blur, 50, 200, None, 3)
 	
-	# gray로 나온 canny를 bgr로 변환    
-	cdst = cv2.cvtColor(dst, cv2.COLOR_GRAY2BGR)
+    # gray로 나온 canny를 bgr로 변환    
+    cdst = cv2.cvtColor(dst, cv2.COLOR_GRAY2BGR)
 
     # Using Probabilistic Hough Transform
     lines = cv2.HoughLinesP(dst, 1, np.pi / 180, 50, None, 50, 10)
