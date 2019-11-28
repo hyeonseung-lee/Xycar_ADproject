@@ -13,20 +13,18 @@ class AutoDrive:
         self.driver = MotorDriver('/xycar_motor_msg')
 
     def trace(self):
-        line_l, line_r = self.line_detector.detect_lines()
-        self.line_detector.show_images(line_l, line_r)
-        angle = self.steer(line_l, line_r)
+        Lx1, Ly1, Lx2, Ly2, Rx1, Ry1, Rx2, Ry2 = self.line_detector.detect_lines()
+        self.line_detector.show_images()
+        lGradient = (Lx2 - Lx1) / (Ly2 - Ly1)
+        rGradient = (Rx2 - Rx1) / (Ry2 - Ry1)
+        print(lGradient, rGradient)
+
+        angle = self.steer(lGradient, rGradient)
         speed = self.accelerate(angle)
         self.driver.drive(angle + 90, speed + 90)
 
     def steer(self, left, right):
-
-        gap = left - right
-        # gap > 0 : 차가 오른쪽으로 진행중
-        # gap < 0 : 차가 왼쪽으로 진행중
-
-        return gap
-        print(gap)
+        left
 
 
     def accelerate(self, angle):

@@ -24,67 +24,55 @@ class LineDetector:
 
     def conv_image(self, data):
         
-        cv_image = self.bridge.imgmsg_to_cv2(data, "bgr8")
-        frame = cv_image[self.roi_vertical_pos:self.roi_vertical_pos + self.scan_height, :]
-        blur = cv2.GaussianBlur(frame, (5, 5), 0)
-        dst = cv2.Canny(blur, 50, 200, None, 3)
-        cdst = cv2.cvtColor(dst, cv2.COLOR_GRAY2BGR)
+        self.frame = self.bridge.imgmsg_to_cv2(data, "bgr8")
+        #lbound = np.array([0, 0, self.value_threshold], dtype=np.uint8)
+        #ubound = np.array([131, 255, 255], dtype=np.uint8)
 
-        lines = cv2.HoughLinesP(dst, 1, np.pi / 180, 50, None, 50, 10)
+        # ROI
 
-        if lines is not None:
-            for i in range(0, len(lines)):
-                l = lines[i][0]
-                cv2.line(cdst, (l[0], l[1]), (l[2], l[3]), (0, 0, 255), 5, cv2.LINE_AA)
+        frame_L = self.frame[self.roi_vertical_pos:self.roi_vertical_pos + self.scan_height, 0:self.scan_width]
+        frame_R = self.frame[self.roi_vertical_pos:self.roi_vertical_pos + self.scan_height, self.image_width - self.scan_width:self.image_width]
+        # blur 처리
+        blur_L = cv2.GaussianBlur(frame_L, (5, 5), 0)
+        blur_R = cv2.GaussianBlur(frame_R, (5, 5), 0)
 
-        lbound = np.array([0, 0, self.value_threshold], dtype=np.uint8)
-        ubound = np.array([131, 255, 255], dtype=np.uint8)
+        # canny 윤곽선
+        dst_L = cv2.Canny(blur_L, 50, 200, None, 3)
+        dst_R = cv2.Canny(blur_R, 50, 200, None, 3)
 
-        hsv = cv2.cvtColor(cdst, cv2.COLOR_BGR2HSV)
-        self.bin = cv2.inRange(hsv, lbound, ubound)
-        self.view = cv2.cvtColor(self.bin, cv2.COLOR_GRAY2BGR)
+        # gray로 나온 canny를 bgr로 변환
+        self.cdst_L = cv2.cvtColor(dst_L, cv2.COLOR_GRAY2BGR)
+        self.cdst_R = cv2.cvtColor(dst_R, cv2.COLOR_GRAY2BGR)
+
+        # Using Probabilistic Hough Transform
+        self.L_lines = cv2.HoughLinesP(dst_L, 1, np.pi / 180, 50, maxLineGap=50)
+        self.R_lines = cv2.HoughLinesP(dst_R, 1, np.pi / 180, 50, maxLineGap=50)
 
     def detect_lines(self):
         # Return positions of left and right lines detected.
+        Lx1, Ly1, Lx2, Ly2 = 0, 0, 0, 0
+        Rx1, Ry1, Rx2, Ry2 = 0, 0, 0, 0
+        if self.L_lines is not None:
+            for line in self.L_lines:
+                x1, y1, x2, y2 = line[0]
+                cv2.line(self.cdst_L, (x1, y1), (x2, y2), (0, 0, 255), 5)
+                Lx1, Ly1, Lx2, Ly2 = x1, y1, x2, y2
 
-        left, right = -1, -1
+        if self.R_lines is not None:
+            for line in self.R_lines:
+                x1, y1, x2, y2 = line[0]
+                cv2.line(self.cdst_R, (x1, y1), (x2, y2), (0, 0, 255), 5)
+                Rx1, Ry1, Rx2, Ry2 = x1, y1, x2, y2
 
-        for l in range(self.image_middle, self.area_width, -1):
-            area = self.bin[self.row_begin:self.row_end, l - self.area_width:l]
-            if cv2.countNonZero(area) > self.pixel_cnt_threshold:
-                L_length = self.image_middle - l      # from center
-                left = l
+        return Lx1, Ly1, Lx2, Ly2, Rx1, Ry1, Rx2, Ry2
 
-                break
+    def show_images(self):
+        # Original
+        cv2.imshow("frame", self.frame)
 
-        for r in range(self.image_middle, self.image_width - self.area_width):
-            area = self.bin[self.row_begin:self.row_end, r:r + self.area_width]
-            if cv2.countNonZero(area) > self.pixel_cnt_threshold:
-                R_length = r - self.image_width      # from center
-                right = r
-                break
-
-        return L_length, R_length
-
-    def show_images(self, left, right):
-
-        if left != -1:
-            self.lsquare = cv2.rectangle(self.view,
-                                         (left, self.row_begin),
-                                         (left - self.area_width, self.row_end),
-                                         (0, 255, 0), 3)
-        else:
-            print("Lost left line")
-
-        if right != -1:
-            self.rsquare = cv2.rectangle(self.view,
-                                         (right, self.row_begin),
-                                         (right + self.area_width, self.row_end),
-                                         (0, 255, 0), 3)
-        else:
-            print("Lost right line")
-
-        cv2.imshow('view', self.view)
+        # Detect
+        cv2.imshow("frameL", self.cdst_L)
+        cv2.imshow("frameR", self.cdst_R)
 
 if __name__ == "__main__":
     det = LineDetector()
