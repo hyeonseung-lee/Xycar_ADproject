@@ -1,0 +1,61 @@
+#!/usr/bin/env python
+
+import rospy, time
+
+from linedetector import LineDetector
+from motordriver import MotorDriver
+
+class AutoDrive:
+
+    def __init__(self):
+        rospy.init_node('xycar_driver')
+        self.line_detector = LineDetector('/usb_cam/image_raw')
+        self.driver = MotorDriver('/xycar_motor_msg')
+
+    def trace(self):
+        line_l, line_r = self.line_detector.detect_lines()
+        self.line_detector.show_images(line_l,s line_r)
+        angle = self.steer(line_l, line_r)
+        speed = self.accelerate(angle)
+        self.driver.drive(angle + 90, speed + 90)
+
+    def steer(self, left, right):
+	if left == -1:
+	    
+ 	    if 320 < right < 400:
+		angle = -58
+	    elif 400 <= right < 480:
+		angle = -40
+	    else:
+		angle = -30
+	elif right == -1:
+	    if 240 <= left < 320:
+		angle = 50
+	    elif 160 <= left < 240:
+		angle = 40
+	    else:
+		angle = 30
+	else:
+	    angle = 0
+	return angle
+ 
+
+
+    def accelerate(self, angle):
+        if angle < -20 or angle > 20:
+            speed = 20
+        else:
+            speed = 30
+        return speed
+
+    def exit(self):
+        print('finished')
+
+if __name__ == '__main__':
+    car = AutoDrive()
+    time.sleep(3)
+    rate = rospy.Rate(10)
+    while not rospy.is_shutdown():
+        car.trace()
+        rate.sleep()
+    rospy.on_shutdown(car.exit)
