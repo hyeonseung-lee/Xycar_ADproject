@@ -43,7 +43,7 @@ while (cap.isOpened()):
 
     # 다각형 모형의 Points
     vertices = np.array(
-        [[(0, 480),(0, 325),(220, 230), (400, 230), (640, 340), (640, 480)]],
+        [[(0, 445), (0, 325), (220, 230), (400, 230), (640, 340), (640, 445)]],
         dtype=np.int32)
     roi_img = region_of_interest(image, vertices, (0, 0, 255))  # vertices에 정한 점들 기준으로 ROI 이미지 생성
 
