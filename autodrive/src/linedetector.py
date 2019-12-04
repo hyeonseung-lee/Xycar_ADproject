@@ -19,8 +19,9 @@ class LineDetector:
         self.roi_vertical_pos = 300
         self.row_begin = (self.scan_height - area_height) // 2
         self.row_end = self.row_begin + area_height
-        self.pixel_cnt_threshold = 0.4 * self.area_width * area_height
+        self.pixel_cnt_threshold = 0.3 * self.area_width * area_height
         self.detect_node = rospy.Subscriber(topic, Image, self.conv_image)
+    self.last_l, self.last_r = 0, 0
 
     def conv_image(self, data):
         
@@ -44,8 +45,6 @@ class LineDetector:
         self.view = cv2.cvtColor(self.bin, cv2.COLOR_GRAY2BGR)
 
     def detect_lines(self):
-        # Return positions of left and right lines detected.
-
         left, right = -1, -1
 
         for l in range(self.image_middle, self.area_width, -1):
@@ -59,8 +58,22 @@ class LineDetector:
             if cv2.countNonZero(area) > self.pixel_cnt_threshold:
                 right = r
                 break
+    if right > 0 and left > 0 and abs(right - left) < 450:
+
+        if self.last_r == -1:
+        right = -1
+        elif self.last_l == -1:
+        left = -1
+
+    self.last_l = left
+    self.last_r = right
+    
+        
+    
 
         return left, right
+
+    
 
     def show_images(self, left, right):
 
