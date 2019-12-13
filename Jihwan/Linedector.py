@@ -15,11 +15,11 @@ class LineDetector:
         self.image_width = 640
         self.image_middle = 320
         self.scan_height = 40
-        self.area_width, area_height = 20, 10
+        self.area_width, self.area_height = 20, 10
         self.roi_vertical_pos = 300
-        self.row_begin = (self.scan_height - area_height) // 2
-        self.row_end = self.row_begin + area_height
-        self.pixel_cnt_threshold = 0.24 * self.area_width * area_height
+        self.row_begin = (self.scan_height - self.area_height) // 2
+        self.row_end = self.row_begin + self.area_height
+        self.pixel_cnt_threshold = 0.24 * self.area_width * self.area_height
         self.detect_node = rospy.Subscriber(topic, Image, self.conv_image)
 
     def conv_image(self, data):
