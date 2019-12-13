@@ -2,6 +2,10 @@ title : 모범운전 xycar
 
 object : 현실속 도로에서 발생할 수 있는 상황에 대처하는 알고리즘을 구성한다.
 
+
+reference : https://github.com/ghostbbbmt/Traffic-Sign-Detection
+
+
 상황 설정
 
 1. 어린이 보호구역
@@ -13,6 +17,8 @@ object : 현실속 도로에서 발생할 수 있는 상황에 대처하는 알�
 
 3. 2의 바가 올라갈 경우.
     : 출발한다.
+
+
 
 소비자에게 보여줄 데이터
 
