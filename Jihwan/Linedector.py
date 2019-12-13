@@ -82,9 +82,3 @@ class LineDetector:
             print("Lost right line")
 
         cv2.imshow('view', self.view)
-
-if __name__ == "__main__":
-    det = LineDetector()
-    time.sleep(1)
-    while not rospy.is_shutdown():
-        det.show_images(det.detect_lines()[0], det.detect_lines()[1])
