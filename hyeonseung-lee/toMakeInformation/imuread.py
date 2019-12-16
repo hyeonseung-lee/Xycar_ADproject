@@ -1,22 +1,23 @@
 #!/usr/bin/env python
 
-import rospy, time
+import rospy
 from diagnostic_msgs.msg import DiagnosticArray
 
-imu_data = None
 
-def callback(data):
-    global imu_data
-    imu_data = data.status[0].values
+class ImuRead:
 
-rospy.init_node('IMU_subscriber', anonymous=True)
-rospy.Subscriber('/diagnostics', DiagnosticArray, callback, queue_size=1)
+    def __init__(self, topic):
+        self.roll = -1
+        self.pitch = -1
+        self.yaw = -1
+        rospy.Subscriber(topic, DiagnosticArray, self.read_data)
 
-time.sleep(15)
+    def read_data(self, data):
+        status = data.status[0].values
+        self.roll = status[0].value
+        self.pitch = status[1].value
+        self.yaw = status[2].value
 
-while not rospy.is_shutdown():
-    roll = imu_data[0].value
-    pitch = imu_data[1].value
-    yaw = imu_data[2].value
-    print("R {} P {} Y {}".format(roll, pitch, yaw))
-    time.sleep(1)
+    def get_data(self):
+        return float(self.roll), float(self.pitch), float(self.yaw)
+
