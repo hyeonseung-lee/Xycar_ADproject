@@ -8,15 +8,18 @@ reference : https://github.com/ghostbbbmt/Traffic-Sign-Detection
 
 상황 설정
 
-1. 어린이 보호구역
-    : 지정 속도 유지
+1. 노란색 감지
+    : 저속운행
 
 
-2. 기차 건널목에서 바가 내려왔을 경우.
-    : 멈춘다.
+2. 초록색 감지
+    : 정상 속도 운행
 
-3. 2의 바가 올라갈 경우.
-    : 출발한다.
+3. 빨간색 감지
+    : 정지
+
+4. 빨간색 사라짐
+    : 재출발
 
 
 
@@ -25,6 +28,9 @@ reference : https://github.com/ghostbbbmt/Traffic-Sign-Detection
 1. 속도
 
 2. 도로 교통 상황
+    - 색
+    - 색의 의미
+
 
 3. IMU센서로부터 얻어드린 pitch, roll, yaw, 차의 현재 상태를 알려주는데 도움이 될 듯 하다.
 
