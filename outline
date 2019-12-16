@@ -25,13 +25,15 @@ reference : https://github.com/ghostbbbmt/Traffic-Sign-Detection
 
 소비자에게 보여줄 데이터
 
-1. 속도
+1. 속도 from autodrive1
 
-2. 도로 교통 상황
+2. 도로 교통 상황 from color dectector
     - 색
     - 색의 의미
 
 
-3. IMU센서로부터 얻어드린 pitch, roll, yaw, 차의 현재 상태를 알려주는데 도움이 될 듯 하다.
+3.  IMU센서로부터 얻어드린 from IMU
+    pitch, roll, yaw,
+    차의 현재 상태를 알려주는데 도움이 될 듯 하다.
 
 
