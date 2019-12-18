@@ -87,6 +87,7 @@ class AutoDrive:
               "yaw : " + str(self.information["yaw"]))
         print("")
 
+        self.r, self.y, self.g = False, False, False
     def exit(self):
         print('finished')
 
@@ -100,3 +101,4 @@ if __name__ == '__main__':
         car.printInformation()
     rate.sleep()
     rospy.on_shutdown(car.exit)
+
