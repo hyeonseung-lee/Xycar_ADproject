@@ -64,18 +64,18 @@ class LineDetector:
 
 
         red_hsv = cv2.cvtColor(cv_image, cv2.COLOR_BGR2HSV)
-        red_bin = cv2.inRange(red_hsv, red_lbound, red_ubound)
-        self.red_view = cv2.cvtColor(red_bin, cv2.COLOR_GRAY2BGR)
+        self.red_bin = cv2.inRange(red_hsv, red_lbound, red_ubound)
+        self.red_view = cv2.cvtColor(self.red_bin, cv2.COLOR_GRAY2BGR)
         cv2.rectangle(self.red_view, (0, 200), (100, 300), (255, 0, 255), 3)
 
         yellow_hsv = cv2.cvtColor(cv_image, cv2.COLOR_BGR2HSV)
-        yellow_bin = cv2.inRange(yellow_hsv, yellow_lbound, yellow_ubound)
-        self.yellow_view = cv2.cvtColor(yellow_bin, cv2.COLOR_GRAY2BGR)
+        self.yellow_bin = cv2.inRange(yellow_hsv, yellow_lbound, yellow_ubound)
+        self.yellow_view = cv2.cvtColor(self.yellow_bin, cv2.COLOR_GRAY2BGR)
         cv2.rectangle(self.yellow_view, (0, 200), (100, 300), (255, 0, 255), 3)
 
         green_hsv = cv2.cvtColor(cv_image, cv2.COLOR_BGR2HSV)
-        green_bin = cv2.inRange(green_hsv, green_lbound, green_ubound)
-        self.green_view = cv2.cvtColor(green_bin, cv2.COLOR_GRAY2BGR)
+        self.green_bin = cv2.inRange(green_hsv, green_lbound, green_ubound)
+        self.green_view = cv2.cvtColor(self.green_bin, cv2.COLOR_GRAY2BGR)
         cv2.rectangle(self.green_view, (0, 200), (100, 300), (255, 0, 255), 3)
 
         # ==========
@@ -109,9 +109,9 @@ class LineDetector:
 
         red, yellow, green = False, False, False
 
-        red_area = self.red_view[200:300, 0:100]
-        yellow_area = self.yellow_view[200:300, 0:100]
-        green_area = self.green_view[200:300, 0:100]
+        red_area = self.red_bin[200:300, 0:100]
+        yellow_area = self.yellow_bin[200:300, 0:100]
+        green_area = self.green_bin[200:300, 0:100]
 
         if cv2.countNonZero(red_area) > self.pixel_cnt_threshold2:
             red = True
