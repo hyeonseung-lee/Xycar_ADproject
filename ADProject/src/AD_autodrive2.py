@@ -21,7 +21,7 @@ class LineDetector:
         self.row_end = self.row_begin + area_height
         self.pixel_cnt_threshold = 0.3 * self.area_width * area_height
         self.detect_node = rospy.Subscriber(topic, Image, self.conv_image)
-    self.last_l, self.last_r = 0, 0
+        self.last_l, self.last_r = 0, 0
 
     def conv_image(self, data):
         
@@ -58,15 +58,15 @@ class LineDetector:
             if cv2.countNonZero(area) > self.pixel_cnt_threshold:
                 right = r
                 break
-    if right > 0 and left > 0 and abs(right - left) < 450:
+        if right > 0 and left > 0 and abs(right - left) < 450:
 
-        if self.last_r == -1:
-        right = -1
-        elif self.last_l == -1:
-        left = -1
+            if self.last_r == -1:
+            right = -1
+            elif self.last_l == -1:
+            left = -1
 
-    self.last_l = left
-    self.last_r = right
+        self.last_l = left
+        self.last_r = right
     
         
     
@@ -94,8 +94,8 @@ class LineDetector:
             print("Lost right line")
 
         cv2.imshow('view', self.view)
-    print(right, left)
-    cv2.waitKey(1)
+        print(right, left)
+        cv2.waitKey(1)
 
 if __name__ == "__main__":
     det = LineDetector()
